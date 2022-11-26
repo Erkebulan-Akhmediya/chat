@@ -27,19 +27,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
+const Users_1 = __importDefault(require("../models/Users"));
+const auth_1 = __importDefault(require("../middleware/auth"));
 const mainRouter = (0, express_1.Router)();
 dotenv.config();
 const tokenSecret = process.env.TOKEN_SECRET;
 mainRouter.get('/', (req, res) => {
     res.send('hi');
 });
-mainRouter.get('/profile', (req, res) => {
-    const decodedToken = jsonwebtoken_1.default.verify(req.cookies.token, tokenSecret);
-    res.send(decodedToken);
+mainRouter.get('/profile', auth_1.default, (req, res) => {
+    const user = req.body.user;
+    res.send(user);
 });
-mainRouter.get('/chats', (req, res) => {
-    res.render('chats');
+mainRouter.get('/chats', auth_1.default, async (req, res) => {
+    let users = await Users_1.default.find({ _id: { $ne: req.body.user._id } });
+    res.render('chats', { users: users });
+});
+mainRouter.get('/chat', (req, res) => {
+    res.render('chat');
 });
 exports.default = mainRouter;

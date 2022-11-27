@@ -28,11 +28,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const dotenv = __importStar(require("dotenv"));
+const Chats_1 = __importDefault(require("../models/Chats"));
 const Users_1 = __importDefault(require("../models/Users"));
 const auth_1 = __importDefault(require("../middleware/auth"));
 const mainRouter = (0, express_1.Router)();
 dotenv.config();
-const tokenSecret = process.env.TOKEN_SECRET;
 mainRouter.get('/', (req, res) => {
     res.send('hi');
 });
@@ -40,11 +40,23 @@ mainRouter.get('/profile', auth_1.default, (req, res) => {
     const user = req.body.user;
     res.send(user);
 });
-mainRouter.get('/chats', auth_1.default, async (req, res) => {
-    let users = await Users_1.default.find({ _id: { $ne: req.body.user._id } });
-    res.render('chats', { users: users });
+mainRouter.get('/users', auth_1.default, async (req, res) => {
+    const users = await Users_1.default.find({ _id: { $ne: req.body.user._id } });
+    res.render('users', { users: users });
 });
-mainRouter.get('/chat', (req, res) => {
-    res.render('chat');
+mainRouter.get('/chats', auth_1.default, async (req, res) => {
+    let chats = await Chats_1.default.find({ participants: req.body.user._id }) || [];
+    res.render('chats', { chats: chats });
+});
+mainRouter.get('/chats/:id', auth_1.default, async (req, res) => {
+    const sender = req.body.user._id;
+    const receiver = req.params.id;
+    const messages = await Chats_1.default.findOne({ $and: [{ participants: sender }, { participants: receiver }] }, { messages: 1 });
+    let messagesArray = messages?.messages || [];
+    for (let i = 0; i < messagesArray?.length; i++) {
+        messagesArray[i].author = await Users_1.default.findOne({ _id: messagesArray[i].author }, { _id: 0, username: 1 });
+        messagesArray[i].author = messagesArray[i].author.username;
+    }
+    res.render('chat', { sender: sender, receiver: receiver, messages: messagesArray });
 });
 exports.default = mainRouter;

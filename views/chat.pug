@@ -6,7 +6,12 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Chat
     body 
-        ul 
-        form(action="/chat", method="post")
-            input#message(type="text", name="message")
-            input(type="submit", value="Отправить") 
+        ul
+            each val in messages 
+                li= val.author + ": " + val.message 
+        input#message(type="text", name="message")
+        button#button Отправить
+        p#sender(hidden)= sender 
+        p#receiver(hidden)= receiver
+        script(src="/socket.io/socket.io.js") 
+        script(src=`/chat.js`) 

@@ -30,14 +30,19 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv = __importStar(require("dotenv"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const http_1 = __importDefault(require("http"));
 dotenv.config();
 class App {
     app;
+    server;
+    getServer() {
+        return this.server;
+    }
     async start() {
         const connectionUrl = process.env.DB_CONNECTION_URL;
         try {
             await mongoose_1.default.connect(connectionUrl);
-            this.app.listen(6942);
+            this.server.listen(6942);
         }
         catch {
             console.log('failed to connect to db');
@@ -52,6 +57,7 @@ class App {
         this.app.use(express_1.default.urlencoded({ extended: true }));
         this.app.use(express_1.default.static('public'));
         this.app.use((0, cookie_parser_1.default)());
+        this.server = http_1.default.createServer(this.app);
     }
 }
 exports.default = App;

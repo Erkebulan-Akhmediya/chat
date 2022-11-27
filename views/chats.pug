@@ -7,8 +7,5 @@ html(lang="en")
         title Chats
     body 
         ul
-            each val in users 
-                li 
-                    h4= val.username 
-                    p= val._id
-                    a(href="/chat") Написать 
+            each val in chats 
+                li= val

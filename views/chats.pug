@@ -6,6 +6,17 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Chats
     body 
+        a(href="/new-group-chat") Создать групповой чат 
         ul
             each val in chats 
-                li= val
+                li 
+                    h4
+                        a(href=`/chats/${val.id}`)= val.username  
+                    p= val._id 
+        h3 Групповые чаты
+        ul 
+            each val in groupChats
+                li
+                    a(href=`/group-chat/${val._id}`)= val.name
+        script(src="/socket.io/socket.io.js") 
+        script(src="/chats.js") 

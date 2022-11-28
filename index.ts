@@ -1,9 +1,11 @@
 import authRouter from './routes/authRouter'
 import mainRouter from './routes/mainRouter'
+import chatRouter from './routes/chatRouter'
 import App from './app'
 import { Server, Socket } from 'socket.io'
 import Chats from './models/Chats'
 import Users from './models/Users'
+import GroupChats from './models/GroupChats'
 
 const app = new App()
 const io = new Server(app.getServer())
@@ -30,8 +32,17 @@ io.on('connection', (socket: Socket) => {
 
         io.emit('message', {})
     })
+
+    socket.on('groupChatMessage', async(message) => {
+        await GroupChats.findByIdAndUpdate(message.to, { $push: { messages: {
+            author: message.from, 
+            message: message.message,
+        } } })
+        io.emit('groupChatMessage', {})
+    })
 })
 
 app.addRouter('/', authRouter)
 app.addRouter('/', mainRouter)
+app.addRouter('/', chatRouter)
 app.start()

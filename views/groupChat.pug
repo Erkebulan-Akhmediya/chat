@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title= groupChat.name
+    body 
+    a(href=`/group-chat/${groupChat._id}/add-new-user`) Добавить участника  
+    ul
+        each val in groupChat 
+            li= val.author.username + ": " + val.message
+    input#message(type="text", name="message")
+    button Отправить
+    p#sender(hidden)= sender
+    p#receiver(hidden)= receiver
+    script(src="/socket.io/socket.io.js") 
+    script(src="/groupChat.js") 

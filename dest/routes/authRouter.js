@@ -30,8 +30,8 @@ const express_1 = require("express");
 const Users_1 = __importDefault(require("../models/Users"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
-const authRouter = (0, express_1.Router)();
 dotenv.config();
+const authRouter = (0, express_1.Router)();
 const tokenSecret = process.env.TOKEN_SECRET;
 authRouter.get('/sign-up', (req, res) => {
     res.render('signUp');
@@ -58,6 +58,6 @@ authRouter.post('/sign-in', async (req, res) => {
     const token = jsonwebtoken_1.default.sign(user.toString(), tokenSecret);
     res.clearCookie('token');
     res.cookie('token', token, { maxAge: 15 * 60 * 1000 });
-    res.redirect('/profile');
+    res.redirect('/chats');
 });
 exports.default = authRouter;

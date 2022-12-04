@@ -3,8 +3,9 @@ import Users from '../models/Users'
 import jwt from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 
-const authRouter = Router()
 dotenv.config()
+
+const authRouter = Router()
 const tokenSecret: any = process.env.TOKEN_SECRET
 
 authRouter.get('/sign-up', (req: Request, res: Response) => {
@@ -38,7 +39,7 @@ authRouter.post('/sign-in', async(req: Request, res: Response) => {
     res.clearCookie('token')
     res.cookie('token', token, { maxAge: 15 * 60 * 1000 })
 
-    res.redirect('/profile')
+    res.redirect('/chats')
 })
 
 export default authRouter

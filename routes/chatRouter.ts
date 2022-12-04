@@ -24,7 +24,7 @@ chatRouter.get('/chats', auth, async(req: Request, res: Response) => {
 
     let groupChats: any = await GroupChats.find({ participants: req.body.user._id }) || []
     
-    res.render('chats', { chats: chats, groupChats: groupChats })
+    res.render('chats', { chats: chats, groupChats: groupChats, user: req.body.user })
 })
 
 chatRouter.get('/chats/:id', auth, async(req: Request, res: Response) => {
@@ -56,7 +56,7 @@ chatRouter.post('/new-group-chat', auth, async(req: Request, res: Response) => {
 
 chatRouter.get('/group-chat/:id', auth, async(req: Request, res: Response) => {
     const groupChat = await GroupChats.findById(req.params.id)
-    let messages = groupChat?.messages
+    let messages: any = groupChat?.messages || []
     const sender = req.body.user._id
     const receiver = req.params.id
 

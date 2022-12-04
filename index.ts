@@ -4,7 +4,6 @@ import chatRouter from './routes/chatRouter'
 import App from './app'
 import { Server, Socket } from 'socket.io'
 import Chats from './models/Chats'
-import Users from './models/Users'
 import GroupChats from './models/GroupChats'
 
 const app = new App()

@@ -46,7 +46,7 @@ chatRouter.get('/chats', auth_1.default, async (req, res) => {
         };
     }
     let groupChats = await GroupChats_1.default.find({ participants: req.body.user._id }) || [];
-    res.render('chats', { chats: chats, groupChats: groupChats });
+    res.render('chats', { chats: chats, groupChats: groupChats, user: req.body.user });
 });
 chatRouter.get('/chats/:id', auth_1.default, async (req, res) => {
     const sender = req.body.user._id;
@@ -71,7 +71,7 @@ chatRouter.post('/new-group-chat', auth_1.default, async (req, res) => {
 });
 chatRouter.get('/group-chat/:id', auth_1.default, async (req, res) => {
     const groupChat = await GroupChats_1.default.findById(req.params.id);
-    let messages = groupChat?.messages;
+    let messages = groupChat?.messages || [];
     const sender = req.body.user._id;
     const receiver = req.params.id;
     for (let i = 0; i < messages?.length; i++) {
